@@ -101,127 +101,13 @@
         </section>
 
         <!-- CURRENT WEATHER -->
-        <section class="bg-gradient-to-br from-sky-900 to-slate-900 border border-slate-700 rounded-3xl p-7 md:p-10 mb-8">
-
-            <div class="flex flex-col md:flex-row justify-between gap-8">
-
-                <div>
-
-                    <p class="text-sky-300 text-sm font-medium mb-3">
-                        MÉTÉO ACTUELLE
-                    </p>
-
-                    <h2 id="city-name" class="text-3xl font-bold mb-2 font-serif">
-                        --
-                    </h2>
-
-                    <p id="weather-description" class="text-slate-300">
-                        --
-                    </p>
-
-                    <div class="flex items-center gap-4 mt-8">
-
-                        <span id="weather-icon" class="text-7xl">
-                            🌤️
-                        </span>
-
-                        <div>
-                            <p id="temperature" class="text-6xl font-bold">
-                                --°
-                            </p>
-
-                            <p class="text-slate-400 mt-2">
-                                Température actuelle
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-center">
-
-                    <div class="bg-white/10 rounded-2xl p-7 text-center">
-
-                        <p class="text-slate-300 text-sm mb-2">
-                            Ressenti
-                        </p>
-
-                        <p id="feels-like" class="text-4xl font-bold">
-                            --°
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </div>
+        <section id = "card-principale">
 
         </section>
 
         <!-- WEATHER DETAILS -->
-        <section class="mb-10">
+        <section id = "details">
 
-            <h2 class="text-xl font-semibold mb-5 font-serif">
-                Détails météorologiques
-            </h2>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
-                <!-- HUMIDITY -->
-                <article class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-
-                    <div class="flex items-center justify-between mb-5">
-                        <span class="text-slate-400">Humidité</span>
-                        <span class="text-2xl">💧</span>
-                    </div>
-
-                    <p id="humidity" class="text-3xl font-bold">
-                        --%
-                    </p>
-
-                    <p class="text-sm text-slate-500 mt-2">
-                        Humidité relative
-                    </p>
-
-                </article>
-
-                <!-- WIND -->
-                <article class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-
-                    <div class="flex items-center justify-between mb-5">
-                        <span class="text-slate-400">Vent</span>
-                        <span class="text-2xl">🌬️</span>
-                    </div>
-
-                    <p id="wind-speed" class="text-3xl font-bold">
-                        -- km/h
-                    </p>
-
-                    <p class="text-sm text-slate-500 mt-2">
-                        Vitesse du vent
-                    </p>
-
-                </article>
-
-                <!-- WEATHER CODE -->
-                <article class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
-
-                    <div class="flex items-center justify-between mb-5">
-                        <span class="text-slate-400">Conditions</span>
-                        <span class="text-2xl">🌤️</span>
-                    </div>
-
-                    <p id="weather-code" class="text-3xl font-bold">
-                        --
-                    </p>
-
-                    <p class="text-sm text-slate-500 mt-2">
-                        Code météo
-                    </p>
-
-                </article>
-
-            </div>
 
         </section>
 
@@ -254,7 +140,7 @@
 
     </main>
 
-    <script type="module" src="script.js"></script>
+    <script type="module" src="src/script.js"></script>
 
 </body>
 </html>
