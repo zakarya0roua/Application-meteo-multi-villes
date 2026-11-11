@@ -1,12 +1,11 @@
 import { WEATHER_CODES } from "./weatherCodes.js"
 
-
 const searchForm = document.querySelector("#search-form");
 const cityInput = document.querySelector("#city-input");
-const searchBtn = document.querySelector("#search-btn");
 const errorMessage = document.querySelector("#error-message");
 const loading = document.querySelector("#loading");
-
+const forecastContainer = document.querySelector("#forecast-container");
+const retryBtn = document.querySelector("#retry-btn");
 // creat cards
 
 const sectionCardsPrancippale = document.querySelector("#card-principale");
@@ -39,6 +38,7 @@ pRessenti.textContent = "Ressenti";
 
 sectionCardsPrancippale.classList.add("bg-gradient-to-br", "from-sky-900", "to-slate-900", "border", "border-slate-700", "rounded-3xl", "p-7", "md:p-10", "mb-8", "hidden");
 sectionDetails.classList.add("mb-10", "hidden")
+forecastContainer.classList.add("grid", "grid-cols-2", "sm:grid-cols-3", "md:grid-cols-5", "gap-4")
 
 divPransipale.classList.add("flex", "flex-col", "md:flex-row", "justify-between", "gap-8");
 pActuelle.classList.add("text-sky-300", "text-sm", "font-medium", "mb-3");
@@ -147,71 +147,138 @@ function creatCardActuelle() {
   sectionDetails.classList.remove("hidden");
 }
 
+function creatForecastCard(date, tempMax, tempMin, code){
+  const divCard = document.createElement("div")
+  const pDate = document.createElement("p")
+  const spanIcon = document.createElement("span")
+  const pDescription = document.createElement("p")
+  const pMax = document.createElement("p")
+  const pMin = document.createElement("p")
+
+  const dat = new Date(date)
+  
+  pDate.textContent = dat.toLocaleDateString("fr-FR", {
+    weekday: "long",
+    day: "numeric",
+    month: "short"
+
+  })
+  
+  const weatherInfo = WEATHER_CODES[code];
+  pDescription.textContent = weatherInfo?.label ?? "Météo inconnue";
+  spanIcon.textContent = weatherInfo?.icon ?? "🌡️";
+
+  pMax.textContent = tempMax != null ? `max: ${tempMax} °C` : "Donnée indisponible";
+  pMin.textContent = tempMin != null ? `min: ${tempMin} °C` : "Donnée indisponible";
+
+
+  divCard.classList.add("bg-slate-900", "border", "border-slate-800", "rounded-2xl", "p-5")
+  pDate.classList.add("text-sm", "text-slate-400")
+  spanIcon.classList.add("text-4xl")
+  pDescription.classList.add("text-slate-300")
+  pMax.classList.add("text-xl", "font-semibold")
+  pMin.classList.add("text-xl", "font-semibold")
+
+  divCard.append(pDate, spanIcon, pDescription, pMax, pMin)
+    forecastContainer.classList.remove("hidden")
+
+
+  return divCard;
+}
 
 
 
-
-
-searchForm.addEventListener("submit", (event) => {
+let lastCity = "";
+searchForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const urlGeocoding = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cityInput.value.trim())}&count=10&language=en&format=json`;
-
+  lastCity = cityInput.value.trim();
   if (cityInput.value.trim() === "") {
     errorMessage.classList.remove("hidden");
     loading.classList.add("hidden");
     sectionCardsPrancippale.classList.add("hidden");
     sectionDetails.classList.add("hidden");
+    forecastContainer.classList.add("hidden")
+
 
     return;
   }
   errorMessage.classList.add("hidden");
   loading.classList.remove("hidden");
-
-  fetch(urlGeocoding)
-    .then((response1) => {
+  retryBtn.classList.add("hidden")
+  try{
+  const response1 = await fetch(urlGeocoding)
       if (!response1.ok) {
-        throw new Error("Erreur lors de la recherche");
+        if (!response2.ok) {
+            throw new Error("Error")
+            }
       }
-      return response1.json();
-    })
-    .then((data1) => {
+      const data1 = await response1.json();
+
       if (!data1.results || data1.results.length === 0) {
         sectionCardsPrancippale.classList.add("hidden");
         sectionDetails.classList.add("hidden");
+        forecastContainer.classList.add("hidden")
 
-        throw new Error("La ville n'existe pas");
+        throw new Error("Cette ville n'existe pas");
       }
-      const urlWeather = `https://api.open-meteo.com/v1/forecast?latitude=${data1.results[0].latitude}&longitude=${data1.results[0].longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,apparent_temperature`;      
-      fetch(urlWeather)
-        .then((response2) => {
+      
+      const urlWeather = `https://api.open-meteo.com/v1/forecast?latitude=${data1.results[0].latitude}&longitude=${data1.results[0].longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code,apparent_temperature&daily=temperature_2m_max,temperature_2m_min,weather_code&forecast_days=5&timezone=auto`;      
+      const response2 = await fetch(urlWeather)
+
           if (!response2.ok) {
-            throw new Error("Erreur");
-          }
-          return response2.json();
-        })
-        .then((data2) => {
+            if (!response2.ok) {
+            throw new Error("Error")
+            }
+            }
+
+          const data2 = await response2.json();
+        
+
           h2CityName.textContent = data1.results[0].name;
           const code = data2.current.weather_code;
           const weatherInfo = WEATHER_CODES[code];
-          pWeather.textContent = weatherInfo?.label ?? "Météo inconnue";
-          span1.textContent = weatherInfo?.icon ?? "🌡️";
+
+          if (weatherInfo) {
+          pWeather.textContent = weatherInfo.label;
+          span1.textContent = weatherInfo.icon;
+          } else {
+          pWeather.textContent = "Météo inconnue";
+          span1.textContent = "🌡️";
+          }
+
           pWeatherCode.textContent = code;
           pTemperature.textContent = `${data2.current.temperature_2m} °C`;
           pFeelsLike.textContent = `${data2.current.apparent_temperature} °C`;
           pHumidity.textContent = `${data2.current.relative_humidity_2m}  %`
           pWindSpeed.textContent = `${data2.current.wind_speed_10m} km/h`
-          console.log(data2.current)
-          creatCardActuelle();
           
-        });
-    })
-    .catch((error1) => {
+          creatCardActuelle();
+          forecastContainer.replaceChildren()
+      
+          const  forecastDays = data2.daily.time.map((date, index) => {
+           return {date: date,
+             tempMax: data2.daily.temperature_2m_max[index],
+             tempMin: data2.daily.temperature_2m_min[index],
+             code: data2.daily.weather_code[index]
+           }
+          })
+          const cards2 = forecastDays.map((day) => {
+            return creatForecastCard(day.date, day.tempMax, day.tempMin, day.code);
+          });
+          forecastContainer.append(...cards2)
+    }
+    catch(error) {
+         
       errorMessage.classList.remove("hidden");
-      errorMessage.textContent = error1.message;
+      
       sectionCardsPrancippale.classList.add("hidden");
       sectionDetails.classList.add("hidden");
-    })
-    .finally(() => {
+      forecastContainer.classList.add("hidden")
+      retryBtn.classList.remove("hidden")
+    }
+    finally {
       loading.classList.add("hidden");
-    });
+    };
 });
+  
