@@ -22,6 +22,15 @@ const div3 = document.createElement("div");
 const pTemperature = document.createElement("p");
 const pTempActuelle = document.createElement("p");
 
+h2CityName.classList.add(
+  "text-3xl",
+  "md:text-4xl",
+  "font-semibold",
+  "font-serif",
+  "mt-2",
+  "break-words",
+);
+
 h2CityName.id = "city-name";
 pWeather.id = "weather-description";
 span1.id = "weather-icon";
@@ -55,12 +64,26 @@ divPransipale.classList.add(
   "flex",
   "flex-col",
   "md:flex-row",
-  "justify-between",
-  "gap-8",
+  "md:items-center",
+  "md:justify-between",
+  "gap-6",
+  "md:gap-10",
 );
+
 pActuelle.classList.add("text-sky-300", "text-sm", "font-medium", "mb-3");
 pWeather.classList.add("text-slate-300");
-div2.classList.add("flex", "items-center", "gap-4", "mt-8");
+div1.classList.add("flex-1", "min-w-0");
+div2.classList.add(
+  "flex",
+  "items-center",
+  "justify-start",
+  "md:justify-end",
+  "gap-4",
+  "mt-6",
+  "md:mt-0",
+  "shrink-0",
+);
+
 span1.classList.add("text-7xl");
 pTemperature.classList.add("text-6xl", "font-bold");
 pTempActuelle.classList.add("text-slate-400", "mt-2");
@@ -146,9 +169,9 @@ function creatCardActuelle() {
   div3.append(pTemperature, pTempActuelle);
   div2.append(span1, div3);
 
-  div1.append(pActuelle, h2CityName, pWeather, div2);
+  div1.append(pActuelle, h2CityName, pWeather);
 
-  divPransipale.append(div1);
+  divPransipale.append(div1, div2);
 
   sectionCardsPrancippale.append(divPransipale);
   sectionCardsPrancippale.classList.remove("hidden");
@@ -247,7 +270,6 @@ searchForm.addEventListener("submit", async (event) => {
       sectionCardsPrancippale.classList.add("hidden");
       sectionDetails.classList.add("hidden");
       forecastContainer.classList.add("hidden");
-      
 
       throw new Error("Cette ville n'existe pas");
     }
@@ -306,9 +328,9 @@ searchForm.addEventListener("submit", async (event) => {
       errorMessage.textContent =
         error.message || "Une erreur inattendue est survenue.";
     }
-    if(!(error.message === "Cette ville n'existe pas")) retryBtn.classList.remove("hidden");
+    if (!(error.message === "Cette ville n'existe pas"))
+      retryBtn.classList.remove("hidden");
     errorMessage.classList.remove("hidden");
-    
 
     sectionCardsPrancippale.classList.add("hidden");
     sectionDetails.classList.add("hidden");
@@ -317,8 +339,8 @@ searchForm.addEventListener("submit", async (event) => {
     loading.classList.add("hidden");
   }
 });
+
 retryBtn.addEventListener("click", () => {
   cityInput.value = lastCity;
   searchForm.requestSubmit();
 });
-
