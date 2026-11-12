@@ -247,6 +247,7 @@ searchForm.addEventListener("submit", async (event) => {
       sectionCardsPrancippale.classList.add("hidden");
       sectionDetails.classList.add("hidden");
       forecastContainer.classList.add("hidden");
+      
 
       throw new Error("Cette ville n'existe pas");
     }
@@ -305,18 +306,19 @@ searchForm.addEventListener("submit", async (event) => {
       errorMessage.textContent =
         error.message || "Une erreur inattendue est survenue.";
     }
+    if(!(error.message === "Cette ville n'existe pas")) retryBtn.classList.remove("hidden");
     errorMessage.classList.remove("hidden");
+    
 
     sectionCardsPrancippale.classList.add("hidden");
     sectionDetails.classList.add("hidden");
     forecastContainer.classList.add("hidden");
-    retryBtn.classList.remove("hidden");
   } finally {
     loading.classList.add("hidden");
   }
 });
-
 retryBtn.addEventListener("click", () => {
   cityInput.value = lastCity;
   searchForm.requestSubmit();
 });
+
