@@ -125,7 +125,6 @@ Geocoding.
   `timezone`                          `auto` pour utiliser le fuseau
                                       horaire de la ville
   -----------------------------------------------------------------------
-
 ## 6. Limites de l'API et bonnes pratiques
 
 Open-Meteo propose une API publique sans clé pour l'utilisation gratuite
